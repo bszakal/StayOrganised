@@ -1,0 +1,49 @@
+/* General */
+"good_morning" = "Bonjour, %@";
+"your_timeline" = "Votre chronologie";
+"todays_tasks" = "Tâches du jour";
+"completed" = "Terminé";
+"create_task" = "Créer une nouvelle tâche";
+"task_title" = "Titre de la tâche";
+"task_activity" = "Activité de la tâche";
+"date" = "Date";
+"time" = "Heure";
+"task_category" = "Catégorie de tâche";
+"task_type" = "Type de tâche";
+"members" = "Membres";
+"profile" = "Profil";
+"home" = "Accueil";
+"track" = "Suivi";
+"challenges" = "Défis";
+"change_theme" = "Changer le thème";
+"language_preferences" = "Préférences de langue";
+"contact_support" = "Contacter le support";
+"account_details" = "Détails du compte";
+"challenge_statistics" = "Statistiques des défis";
+"choose_theme" = "Choisir un thème";
+"dare_to_achieve" = "Osez réaliser.";
+
+/* Categories */
+"category_all" = "Tout";
+"category_grocery" = "Courses";
+"category_personal" = "Personnel";
+"category_work" = "Travail";
+"category_health" = "Santé";
+"category_education" = "Éducation";
+
+/* Priorities */
+"priority_low" = "Faible";
+"priority_medium" = "Moyen";
+"priority_high" = "Élevé";
+"priority_urgent" = "Urgent";
+
+/* Task Types */
+"type_individual" = "Individuel";
+"type_team" = "Équipe";
+
+/* Actions */
+"edit" = "Modifier";
+"delete" = "Supprimer";
+"mark_as_done" = "Marquer comme terminé";
+"cancel" = "Annuler";
+"save" = "Sauvegarder";
