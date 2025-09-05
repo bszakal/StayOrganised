@@ -22,16 +22,19 @@ class HomeViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     public let taskListViewModel: TaskListViewModel
     public let timeLineViewModel: TimeLineViewModel
+    private let createTaskViewModelFactory: CreateTaskViewModelFactoryProtocol
     
     init(coreDataManager: CoreDataManagerProtocol,
          taskListViewModelFactory: TaskListViewModelFactoryProtocol,
-         timeLineViewModelFactory: TimeLineViewModelFactoryProtocol) {
+         timeLineViewModelFactory: TimeLineViewModelFactoryProtocol,
+         createTaskViewModelFactory: CreateTaskViewModelFactoryProtocol) {
         self.coreDataManager = coreDataManager
         let date = Date()
         self.selectedDate = date
         
         self.taskListViewModel = taskListViewModelFactory.createTaskListViewModel(startDate: Date(), endDate: nil)
         self.timeLineViewModel = timeLineViewModelFactory.createTimeLineViewModel(selectedDate: date)
+        self.createTaskViewModelFactory = createTaskViewModelFactory
             
         taskListViewModel.completedTasksCallback = { [weak self] percentage in
             self?.completionPercentage = percentage
@@ -44,5 +47,9 @@ class HomeViewModel: ObservableObject {
     
     func selectCategory(_ category: TaskCategory) {
         selectedCategory = category
+    }
+    
+    public func generateCreateTaskViewModel() -> CreateTaskViewModel {
+        return createTaskViewModelFactory.createCreateTaskViewModel()
     }
 }

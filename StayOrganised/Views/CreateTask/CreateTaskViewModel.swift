@@ -6,17 +6,16 @@ class CreateTaskViewModel: ObservableObject {
     @Published var taskDescription = ""
     @Published var dueDate = Date()
     @Published var selectedCategory: TaskCategory = .personal
-    @Published var selectedTaskType: TaskType = .individual
     @Published var selectedPriority: TaskPriority = .medium
     
-    private var coreDataManager: CoreDataManagerProtocol?
+    private let coreDataManager: CoreDataManagerProtocol
     
     var isFormValid: Bool {
         !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
     
-    func setCoreDataManager(_ manager: CoreDataManagerProtocol) {
-        self.coreDataManager = manager
+    init(coreDataManager: CoreDataManagerProtocol) {
+        self.coreDataManager = coreDataManager
     }
     
     func createTask() {
@@ -27,11 +26,11 @@ class CreateTaskViewModel: ObservableObject {
             taskDescription: taskDescription.isEmpty ? nil : taskDescription.trimmingCharacters(in: .whitespacesAndNewlines),
             category: selectedCategory,
             priority: selectedPriority,
-            taskType: selectedTaskType,
+            taskType: .individual,
             dueDate: dueDate
         )
         
-        coreDataManager?.createTask(task)
+        _ = coreDataManager.createTask(task)
         resetForm()
     }
     
@@ -40,7 +39,6 @@ class CreateTaskViewModel: ObservableObject {
         taskDescription = ""
         dueDate = Date()
         selectedCategory = .personal
-        selectedTaskType = .individual
         selectedPriority = .medium
     }
 }

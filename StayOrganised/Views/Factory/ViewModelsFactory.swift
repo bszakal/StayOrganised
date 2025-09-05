@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol ViewModelsFactoryProtocol: TaskListViewModelFactoryProtocol, HomeViewModelFactoryProtocol, TimeLineViewModelFactoryProtocol, CalendarViewModelFactoryProtocol {
+protocol ViewModelsFactoryProtocol: TaskListViewModelFactoryProtocol, HomeViewModelFactoryProtocol, TimeLineViewModelFactoryProtocol, CalendarViewModelFactoryProtocol, CreateTaskViewModelFactoryProtocol {
     
 }
 
@@ -27,6 +27,10 @@ protocol CalendarViewModelFactoryProtocol {
     func createCalendarViewModel() -> CalendarViewModel
 }
 
+protocol CreateTaskViewModelFactoryProtocol {
+    func createCreateTaskViewModel() -> CreateTaskViewModel
+}
+
 class ViewModelsFactory: ViewModelsFactoryProtocol {
 
     private let coreDataManager: CoreDataManagerProtocol
@@ -36,7 +40,7 @@ class ViewModelsFactory: ViewModelsFactoryProtocol {
     }
     
     func createHomeViewModel() -> HomeViewModel {
-        return HomeViewModel(coreDataManager: coreDataManager, taskListViewModelFactory: self, timeLineViewModelFactory: self)
+        return HomeViewModel(coreDataManager: coreDataManager, taskListViewModelFactory: self, timeLineViewModelFactory: self, createTaskViewModelFactory: self)
     }
     
     func createTaskListViewModel(startDate: Date? = Date(), endDate: Date? = nil) -> TaskListViewModel {
@@ -49,5 +53,9 @@ class ViewModelsFactory: ViewModelsFactoryProtocol {
     
     func createCalendarViewModel() -> CalendarViewModel {
         CalendarViewModel(taskListViewModelFactory: self, coreDataManager: coreDataManager)
+    }
+    
+    func createCreateTaskViewModel() -> CreateTaskViewModel {
+        CreateTaskViewModel(coreDataManager: coreDataManager)
     }
 }
