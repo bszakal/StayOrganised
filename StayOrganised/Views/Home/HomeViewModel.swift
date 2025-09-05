@@ -2,89 +2,47 @@ import Foundation
 import Combine
 
 class HomeViewModel: ObservableObject {
+        
+    @Published var selectedDate : Date {
+        didSet {
+            taskListViewModel.startDate = selectedDate
+            taskListViewModel.endDate = selectedDate
+        }
+    }
     
-    @Published var tasks: [Task] = []
-    @Published var selectedDate = Date()
-    @Published var selectedCategory: TaskCategory = .all
+    @Published var selectedCategory: TaskCategory = .all {
+        didSet {
+            taskListViewModel.category = selectedCategory
+        }
+    }
+    
     @Published var completionPercentage: Double = 0
     
-    private var coreDataManager: CoreDataManagerProtocol?
+    private var coreDataManager: CoreDataManagerProtocol
     private var cancellables = Set<AnyCancellable>()
+    public let taskListViewModel: TaskListViewModel
+    public let timeLineViewModel: TimeLineViewModel
     
-    var weekDays: [Date] {
-        let calendar = Calendar.current
-        let today = Date()
+    init(coreDataManager: CoreDataManagerProtocol,
+         taskListViewModelFactory: TaskListViewModelFactoryProtocol,
+         timeLineViewModelFactory: TimeLineViewModelFactoryProtocol) {
+        self.coreDataManager = coreDataManager
+        let date = Date()
+        self.selectedDate = date
         
-        let previousDays = (1...3).reversed().compactMap { offset in
-            return calendar.date(byAdding: .day, value: -offset, to: today)
+        self.taskListViewModel = taskListViewModelFactory.createTaskListViewModel(startDate: Date(), endDate: nil)
+        self.timeLineViewModel = timeLineViewModelFactory.createTimeLineViewModel(selectedDate: date)
+            
+        taskListViewModel.completedTasksCallback = { [weak self] percentage in
+            self?.completionPercentage = percentage
         }
-        let followingDays = (0...4).compactMap { offset in
-            return calendar.date(byAdding: .day, value: offset, to: today)
-        }
         
-        return previousDays + followingDays
-        
-    }
-    
-    var filteredTasks: [Task] {
-        let calendar = Calendar.current
-        return tasks.filter { task in
-            let matchesDate = calendar.isDate(task.createdAt, inSameDayAs: selectedDate)
-            let matchesCategory = selectedCategory == .all || task.category == selectedCategory
-            return matchesDate && matchesCategory
-        }
-    }
-    
-    var pendingTasks: [Task] {
-        filteredTasks.filter { !$0.isCompleted }
-            .sorted { $0.createdAt < $1.createdAt }
-    }
-    
-    var completedTasks: [Task] {
-        filteredTasks.filter { $0.isCompleted }
-            .sorted { $0.createdAt < $1.createdAt }
-    }
-    
-    func setCoreDataManager(_ manager: CoreDataManagerProtocol) {
-        self.coreDataManager = manager
-        
-        manager.tasks
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] tasks in
-                self?.tasks = tasks
-                self?.updateCompletionPercentage()
-            }
-            .store(in: &cancellables)
-        
-        manager.loadTasks()
-    }
-    
-    func selectDate(_ date: Date) {
-        selectedDate = date
-        updateCompletionPercentage()
+        timeLineViewModel.selectedDayCallback = { [weak self] date in
+            self?.selectedDate = date
+        } 
     }
     
     func selectCategory(_ category: TaskCategory) {
         selectedCategory = category
-        updateCompletionPercentage()
-    }
-    
-    func toggleTaskCompletion(_ task: Task) {
-        coreDataManager?.toggleTaskCompletion(task)
-    }
-    
-    func deleteTask(_ task: Task) {
-        coreDataManager?.deleteTask(task)
-    }
-    
-    private func updateCompletionPercentage() {
-        let totalTasks = filteredTasks.count
-        guard totalTasks > 0 else {
-            completionPercentage = 0
-            return
-        }
-        
-        let completedCount = filteredTasks.filter { $0.isCompleted }.count
-        completionPercentage = Double(completedCount) / Double(totalTasks) * 100
     }
 }

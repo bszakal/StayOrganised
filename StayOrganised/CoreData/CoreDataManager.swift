@@ -12,10 +12,20 @@ class CoreDataManager: CoreDataManagerProtocol {
         tasksSubject.eraseToAnyPublisher()
     }
     
-    init(coreDataService: CoreDataServiceProtocol, taskParser: TaskParserProtocol) {
-        self.coreDataService = coreDataService
-        self.taskParser = taskParser
-        loadTasks()
+    private let persistentContainer: NSPersistentContainer
+    init(coreDataFactory: CoreDataFactoryProtocol) {
+        
+        let persistentContainer = NSPersistentContainer(name: "StayOrganisedModel")
+        persistentContainer.loadPersistentStores { _, error in
+            if let error = error {
+                fatalError("Core Data error: \(error)")
+            }
+        }
+        self.persistentContainer = persistentContainer
+        
+        self.coreDataService = coreDataFactory.createCoreDataService(context: persistentContainer.viewContext)
+        self.taskParser = coreDataFactory.createCoredataParser(context: persistentContainer.viewContext)
+        self.loadTasks()
     }
     
     func loadTasks() {
@@ -23,6 +33,13 @@ class CoreDataManager: CoreDataManagerProtocol {
         let businessTasks = taskEntities.compactMap { taskParser.convertToBusinessModel($0) }
         tasksSubject.send(businessTasks)
     }
+
+    
+//    func fetchTasks(startDate: Date, endDate: Date) -> [Task] {
+//        let taskEntities = coreDataService.fetchTasks(startDate: startDate, endDate: endDate)
+//        let businessTasks = taskEntities.compactMap { taskParser.convertToBusinessModel($0) }
+//        return businessTasks
+//    }
     
     func createTask(_ task: Task) -> Bool {
         guard let taskEntity = taskParser.convertToCoreDataModel(task) else {
@@ -37,8 +54,8 @@ class CoreDataManager: CoreDataManagerProtocol {
     }
     
     func updateTask(_ task: Task) -> Bool {
-        let taskEntities = coreDataService.fetchTasks()
-        guard let existingEntity = taskEntities.first(where: { $0.id == task.id }) else {
+        let taskEntity = try? coreDataService.fetchTask(id: task.id)
+        guard let existingEntity = taskEntity else {
             return false
         }
         

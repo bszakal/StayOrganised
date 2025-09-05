@@ -4,7 +4,7 @@ import Combine
 protocol CoreDataManagerProtocol {
     var tasks: AnyPublisher<[Task], Never> { get }
     
-    func loadTasks()
+//    func fetchTasks(startDate: Date, endDate: Date) -> [Task]
     func createTask(_ task: Task) -> Bool
     func updateTask(_ task: Task) -> Bool
     func deleteTask(_ task: Task) -> Bool

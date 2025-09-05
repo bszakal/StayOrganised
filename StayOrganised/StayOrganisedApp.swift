@@ -12,33 +12,22 @@ import CoreData
 struct StayOrganisedApp: App {
     
     @StateObject private var themeManager = ThemeManager()
-    
-    private let coreDataService: CoreDataServiceProtocol
-    private let taskParser: TaskParserProtocol
+
     private let coreDataManager: CoreDataManagerProtocol
+    private let mainTabViewModel: MainTabViewModel
     
     init() {
-        let persistentContainer = NSPersistentContainer(name: "StayOrganisedModel")
-        persistentContainer.loadPersistentStores { _, error in
-            if let error = error {
-                fatalError("Core Data error: \(error)")
-            }
-        }
+
+        self.coreDataManager = CoreDataManager(coreDataFactory: CoreDataFactory())
+        let viewModelsFactory = ViewModelsFactory(coreDataManager: coreDataManager)
         
-        let coreDataService = CoreDataService(context: persistentContainer.viewContext)
-        let taskParser = TaskParser(context: persistentContainer.viewContext)
-        let coreDataManager = CoreDataManager(coreDataService: coreDataService, taskParser: taskParser)
-        
-        self.coreDataService = coreDataService
-        self.taskParser = taskParser
-        self.coreDataManager = coreDataManager
+        self.mainTabViewModel = MainTabViewModel(homeViewModelFactory: viewModelsFactory, calendarViewModelFactory: viewModelsFactory)
     }
     
     var body: some Scene {
         WindowGroup {
-            MainTabView()
+            MainTabView(viewModel: mainTabViewModel)
                 .environmentObject(themeManager)
-                .environment(\.coreDataManager, coreDataManager)
         }
     }
 }

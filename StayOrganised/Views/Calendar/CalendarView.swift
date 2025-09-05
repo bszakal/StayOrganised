@@ -2,9 +2,8 @@ import SwiftUI
 
 struct CalendarView: View {
     
-    @StateObject private var viewModel = CalendarViewModel()
+    @ObservedObject var viewModel: CalendarViewModel
     @EnvironmentObject var themeManager: ThemeManager
-    @Environment(\.coreDataManager) private var coreDataManager
     
     var body: some View {
         NavigationView {
@@ -15,17 +14,12 @@ struct CalendarView: View {
                 VStack(spacing: 20) {
                     headerView
                     monthCalendarView
-                    dateRangeSelector
-                    taskListView
+                    DateRangeSelector(startDate: viewModel.startDate, endDate: viewModel.endDate)
+                    TaskListView(viewModel: viewModel.taskListViewModel)
                     
                     Spacer()
                 }
                 .padding()
-            }
-        }
-        .onAppear {
-            if let manager = coreDataManager {
-                viewModel.setCoreDataManager(manager)
             }
         }
     }
@@ -64,6 +58,7 @@ struct CalendarView: View {
                     tasksInfo: viewModel.getTasksInfo(for: day),
                     theme: themeManager.currentTheme,
                     isInDateRange: viewModel.isDateInRange(day),
+                    month: viewModel.selectedMonth,
                     onTap: {
                         viewModel.selectDate(day)
                     }
@@ -73,48 +68,5 @@ struct CalendarView: View {
         .padding()
         .background(themeManager.currentTheme.cardBackgroundColor)
         .cornerRadius(16)
-    }
-    
-    private var dateRangeSelector: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                Text("Start Date")
-                    .font(.caption)
-                    .foregroundColor(themeManager.currentTheme.textSecondaryColor)
-                Text(viewModel.startDate?.formatted(date: .abbreviated, time: .omitted) ?? "Not selected")
-                    .font(.subheadline)
-                    .foregroundColor(themeManager.currentTheme.textPrimaryColor)
-            }
-            
-            Spacer()
-            
-            VStack(alignment: .trailing) {
-                Text("End Date")
-                    .font(.caption)
-                    .foregroundColor(themeManager.currentTheme.textSecondaryColor)
-                Text(viewModel.endDate?.formatted(date: .abbreviated, time: .omitted) ?? "Not selected")
-                    .font(.subheadline)
-                    .foregroundColor(themeManager.currentTheme.textPrimaryColor)
-            }
-        }
-        .padding()
-        .background(themeManager.currentTheme.cardBackgroundColor)
-        .cornerRadius(12)
-    }
-    
-    private var taskListView: some View {
-        ScrollView {
-            LazyVStack(spacing: 12) {
-                ForEach(viewModel.tasksInDateRange) { task in
-                    TaskRowView(
-                        task: task,
-                        theme: themeManager.currentTheme,
-                        onTap: { },
-                        onToggleComplete: { viewModel.toggleTaskCompletion(task) },
-                        onDelete: { viewModel.deleteTask(task) }
-                    )
-                }
-            }
-        }
     }
 }

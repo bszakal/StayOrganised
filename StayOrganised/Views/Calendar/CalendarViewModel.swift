@@ -5,17 +5,35 @@ class CalendarViewModel: ObservableObject {
     
     @Published var tasks: [Task] = []
     @Published var selectedMonth = Date()
-    @Published var startDate: Date?
-    @Published var endDate: Date?
+    @Published var startDate: Date? {
+        didSet {
+            taskListViewModel.startDate = startDate
+        }
+    }
+    @Published var endDate: Date? {
+        didSet {
+            taskListViewModel.endDate = endDate
+        }
+    }
     
-    private var coreDataManager: CoreDataManagerProtocol?
+    private var coreDataManager: CoreDataManagerProtocol
     private var cancellables = Set<AnyCancellable>()
+    
+    private(set) var taskListViewModel: TaskListViewModel
     
     let monthFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM yyyy"
         return formatter
     }()
+    
+    init(taskListViewModelFactory: TaskListViewModelFactoryProtocol, coreDataManager: CoreDataManagerProtocol) {
+        self.taskListViewModel = taskListViewModelFactory.createTaskListViewModel(startDate: nil, endDate: nil)
+        self.coreDataManager = coreDataManager
+        self.subscriptions()
+    }
+    
+
     
     var availableMonths: [Date] {
         let calendar = Calendar.current
@@ -39,41 +57,9 @@ class CalendarViewModel: ObservableObject {
             return []
         }
         
-        return (0..<42).compactMap { offset in
+        return (0..<35).compactMap { offset in
             calendar.date(byAdding: .day, value: offset, to: startDate)
         }
-    }
-    
-    var tasksInDateRange: [Task] {
-        guard let start = startDate, let end = endDate else {
-            return []
-        }
-        
-        return tasks.filter { task in
-            let taskDate = Calendar.current.startOfDay(for: task.createdAt)
-            let startDay = Calendar.current.startOfDay(for: start)
-            let endDay = Calendar.current.startOfDay(for: end)
-            return taskDate >= startDay && taskDate <= endDay
-        }
-        .sorted { first, second in
-            if first.isCompleted != second.isCompleted {
-                return !first.isCompleted
-            }
-            return first.createdAt < second.createdAt
-        }
-    }
-    
-    func setCoreDataManager(_ manager: CoreDataManagerProtocol) {
-        self.coreDataManager = manager
-        
-        manager.tasks
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] tasks in
-                self?.tasks = tasks
-            }
-            .store(in: &cancellables)
-        
-        manager.loadTasks()
     }
     
     func selectMonth(_ month: Date) {
@@ -108,17 +94,32 @@ class CalendarViewModel: ObservableObject {
     }
     
     func getTasksInfo(for date: Date) -> (completed: Int, total: Int) {
-        let calendar = Calendar.current
-        let dayTasks = tasks.filter { calendar.isDate($0.createdAt, inSameDayAs: date) }
-        let completedCount = dayTasks.filter { $0.isCompleted }.count
-        return (completed: completedCount, total: dayTasks.count)
+
+        let startOfDay = Calendar.current.startOfDay(for: date)
+        guard let endOfDay = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: date) else { return (0,0) }
+        
+        let filteredByDateTasks = tasks.filter { task in
+            let dateFilter = task.dueDate >= startOfDay && task.dueDate <= endOfDay
+            return dateFilter
+        }
+
+        let pendingTasks = filteredByDateTasks
+                                .filter { !$0.isCompleted }
+                                .sorted { $0.createdAt < $1.createdAt }
+        
+        let completedTasks = filteredByDateTasks
+                                .filter { $0.isCompleted }
+                                .sorted { $0.createdAt < $1.createdAt }
+        
+        return (completedTasks.count, pendingTasks.count + completedTasks.count)
     }
     
-    func toggleTaskCompletion(_ task: Task) {
-        coreDataManager?.toggleTaskCompletion(task)
-    }
-    
-    func deleteTask(_ task: Task) {
-        coreDataManager?.deleteTask(task)
+    private func subscriptions() {
+        self.coreDataManager.tasks
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] tasks in
+                self?.tasks = tasks
+            }
+            .store(in: &cancellables)
     }
 }

@@ -7,7 +7,7 @@ struct Task: Identifiable, Equatable {
     let category: TaskCategory
     let priority: TaskPriority
     let taskType: TaskType
-    let dueDate: Date?
+    let dueDate: Date
     let isCompleted: Bool
     let createdAt: Date
     let updatedAt: Date
@@ -19,7 +19,7 @@ struct Task: Identifiable, Equatable {
         category: TaskCategory = .personal,
         priority: TaskPriority = .medium,
         taskType: TaskType = .individual,
-        dueDate: Date? = nil,
+        dueDate: Date,
         isCompleted: Bool = false,
         createdAt: Date = Date(),
         updatedAt: Date = Date()

@@ -28,7 +28,7 @@ class TaskParser: TaskParserProtocol {
             category: category,
             priority: priority,
             taskType: taskType,
-            dueDate: entity.dueDate,
+            dueDate: entity.dueDate ?? Date(),
             isCompleted: entity.isCompleted,
             createdAt: createdAt,
             updatedAt: updatedAt

@@ -6,6 +6,7 @@ struct CalendarDayView: View {
     let tasksInfo: (completed: Int, total: Int)
     let theme: AppTheme
     let isInDateRange: Bool
+    let month: Date
     let onTap: () -> Void
     
     private var dayFormatter: DateFormatter {
@@ -19,7 +20,7 @@ struct CalendarDayView: View {
     }
     
     private var isInCurrentMonth: Bool {
-        Calendar.current.compare(day, to: Date(), toGranularity: .month) == .orderedSame
+        Calendar.current.compare(day, to: month, toGranularity: .month) == .orderedSame
     }
     
     private var completionPercentage: Double {
@@ -35,17 +36,9 @@ struct CalendarDayView: View {
                     .foregroundColor(textColor)
                 
                 if tasksInfo.total > 0 {
-                    if day < Date() {
-                        // Past days: show completion percentage
-                        Text("\(Int(completionPercentage * 100))%")
-                            .font(.caption2)
-                            .foregroundColor(theme.primaryColor)
-                    } else {
-                        // Future days: show number of upcoming tasks
-                        Text("\(tasksInfo.total)")
-                            .font(.caption2)
-                            .foregroundColor(theme.textSecondaryColor)
-                    }
+                    Text("\(Int(completionPercentage * 100))%")
+                        .font(.caption2)
+                        .foregroundColor(theme.primaryColor)
                 }
             }
             .frame(width: 40, height: 40)
@@ -70,9 +63,7 @@ struct CalendarDayView: View {
     }
     
     private var backgroundColor: Color {
-        if isToday {
-            return theme.primaryColor
-        } else if tasksInfo.total > 0 && day < Date() {
+        if tasksInfo.total > 0 {
             return theme.primaryColor.opacity(completionPercentage * 0.3)
         } else {
             return Color.clear
