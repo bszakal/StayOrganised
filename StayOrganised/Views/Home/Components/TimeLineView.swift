@@ -12,11 +12,11 @@ struct TimeLineView: View {
     @ObservedObject var viewModel: TimeLineViewModel
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(LocalizedString.yourTimeline.localized)
-                .font(.subheadline)
-                .foregroundColor(themeManager.currentTheme.textSecondaryColor)
-            
+//        VStack(alignment: .leading, spacing: 12) {
+//            Text(LocalizedString.yourTimeline.localized)
+//                .font(.subheadline)
+//                .foregroundColor(themeManager.currentTheme.textSecondaryColor)
+//            
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 16) {
                     ForEach(viewModel.weekDays, id: \.self) { day in
@@ -31,6 +31,6 @@ struct TimeLineView: View {
                 }
                 .padding(.horizontal, 4)
             }
-        }
+//        }
     }
 }

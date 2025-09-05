@@ -24,7 +24,7 @@ class TimeLineViewModel: ObservableObject {
             let previousDays = (1...3).reversed().compactMap { offset in
                 return calendar.date(byAdding: .day, value: -offset, to: today)
             }
-            let followingDays = (0...3).compactMap { offset in
+            let followingDays = (0...6).compactMap { offset in
                 return calendar.date(byAdding: .day, value: offset, to: today)
             }
             

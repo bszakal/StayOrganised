@@ -47,12 +47,12 @@ enum TaskCategory: String, CaseIterable {
     
     var displayName: String {
         switch self {
-        case .all: return LocalizedString.categoryAll.rawValue
-        case .grocery: return LocalizedString.categoryGrocery.rawValue
-        case .personal: return LocalizedString.categoryPersonal.rawValue
-        case .work: return LocalizedString.categoryWork.rawValue
-        case .health: return LocalizedString.categoryHealth.rawValue
-        case .education: return LocalizedString.categoryEducation.rawValue
+        case .all: return LocalizedString.categoryAll.localized
+        case .grocery: return LocalizedString.categoryGrocery.localized
+        case .personal: return LocalizedString.categoryPersonal.localized
+        case .work: return LocalizedString.categoryWork.localized
+        case .health: return LocalizedString.categoryHealth.localized
+        case .education: return LocalizedString.categoryEducation.localized
         }
     }
     
@@ -76,10 +76,10 @@ enum TaskPriority: Int16, CaseIterable {
     
     var displayName: String {
         switch self {
-        case .low: return LocalizedString.priorityLow.rawValue
-        case .medium: return LocalizedString.priorityMedium.rawValue
-        case .high: return LocalizedString.priorityHigh.rawValue
-        case .urgent: return LocalizedString.priorityUrgent.rawValue
+        case .low: return LocalizedString.priorityLow.localized
+        case .medium: return LocalizedString.priorityMedium.localized
+        case .high: return LocalizedString.priorityHigh.localized
+        case .urgent: return LocalizedString.priorityUrgent.localized
         }
     }
 }
@@ -90,8 +90,8 @@ enum TaskType: String, CaseIterable {
     
     var displayName: String {
         switch self {
-        case .individual: return LocalizedString.typeIndividual.rawValue
-        case .team: return LocalizedString.typeTeam.rawValue
+        case .individual: return LocalizedString.typeIndividual.localized
+        case .team: return LocalizedString.typeTeam.localized
         }
     }
 }

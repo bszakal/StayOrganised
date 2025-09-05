@@ -26,7 +26,7 @@ struct CalendarView: View {
     
     private var headerView: some View {
         HStack {
-            Text("Calendar")
+            Text(LocalizedString.calendar.localized)
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .foregroundColor(themeManager.currentTheme.textPrimaryColor)

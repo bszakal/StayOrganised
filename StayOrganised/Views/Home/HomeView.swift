@@ -4,7 +4,6 @@ struct HomeView: View {
     
     @ObservedObject var viewModel: HomeViewModel
     @EnvironmentObject var themeManager: ThemeManager
-//    @Environment(\.coreDataManager) private var coreDataManager
     @State private var showingCreateTask = false
     
     var body: some View {
@@ -43,8 +42,8 @@ struct HomeView: View {
     private var headerView: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text(LocalizedString.goodMorning.localized)
-                    .font(.title2)
+                Text(LocalizedString.letsGo.localized)
+                    .font(.title)
                     .fontWeight(.semibold)
                     .foregroundColor(themeManager.currentTheme.textPrimaryColor)
             }

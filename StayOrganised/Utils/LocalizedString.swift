@@ -1,7 +1,8 @@
 import Foundation
 
 enum LocalizedString: String, CaseIterable {
-    case goodMorning = "good_morning"
+    case letsGo = "lets_go"
+    case calendar = "calendar"
     case yourTimeline = "your_timeline"
     case todaysTasks = "todays_tasks"
     case completed = "completed"
@@ -32,6 +33,7 @@ enum LocalizedString: String, CaseIterable {
     case categoryHealth = "category_health"
     case categoryEducation = "category_education"
     
+    case priority = "priority"
     case priorityLow = "priority_low"
     case priorityMedium = "priority_medium"
     case priorityHigh = "priority_high"
@@ -45,6 +47,7 @@ enum LocalizedString: String, CaseIterable {
     case markAsDone = "mark_as_done"
     case cancel = "cancel"
     case save = "save"
+    case writeHere = "write_here"
     
     var localized: String {
         return NSLocalizedString(self.rawValue, comment: "")

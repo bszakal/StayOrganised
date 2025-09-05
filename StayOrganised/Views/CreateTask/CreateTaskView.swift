@@ -52,7 +52,7 @@ struct CreateTaskView: View {
                 .fontWeight(.medium)
                 .foregroundColor(themeManager.currentTheme.textPrimaryColor)
             
-            TextField("Write here", text: $viewModel.title)
+            TextField(LocalizedString.writeHere.localized, text: $viewModel.title)
                 .textFieldStyle(ThemedTextFieldStyle(theme: themeManager.currentTheme))
         }
     }
@@ -64,7 +64,7 @@ struct CreateTaskView: View {
                 .fontWeight(.medium)
                 .foregroundColor(themeManager.currentTheme.textPrimaryColor)
             
-            TextField("Write here", text: $viewModel.taskDescription)
+            TextField(LocalizedString.writeHere.localized, text: $viewModel.taskDescription)
                 .textFieldStyle(ThemedTextFieldStyle(theme: themeManager.currentTheme))
         }
     }
@@ -129,7 +129,7 @@ struct CreateTaskView: View {
     
     private var prioritySelection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Priority")
+            Text(LocalizedString.priority.localized)
                 .font(.subheadline)
                 .fontWeight(.medium)
                 .foregroundColor(themeManager.currentTheme.textPrimaryColor)

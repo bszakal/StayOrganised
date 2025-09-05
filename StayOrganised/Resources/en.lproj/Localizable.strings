@@ -1,7 +1,7 @@
 /* General */
-"good_morning" = "Good Morning, %@";
+"lets_go" = "Let's Go !";
 "your_timeline" = "Your timeline";
-"todays_tasks" = "Today's tasks";
+"todays_tasks" = "Pending Tasks";
 "completed" = "Completed";
 "create_task" = "Create a new task";
 "task_title" = "Task title";
@@ -15,6 +15,7 @@
 "home" = "Home";
 "track" = "Track";
 "challenges" = "Challenges";
+"calendar" = "Calendar";
 "change_theme" = "Change Theme";
 "language_preferences" = "Language Preferences";
 "contact_support" = "Contact Support";
@@ -32,6 +33,7 @@
 "category_education" = "Education";
 
 /* Priorities */
+"priority" = "Priority";
 "priority_low" = "Low";
 "priority_medium" = "Medium";
 "priority_high" = "High";
@@ -47,3 +49,4 @@
 "mark_as_done" = "Mark as Done";
 "cancel" = "Cancel";
 "save" = "Save";
+"write_here" = "Write here";

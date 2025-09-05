@@ -4,6 +4,7 @@ struct LanguageSelectorView: View {
     
     @EnvironmentObject var themeManager: ThemeManager
     @State private var selectedLanguage = "en"
+    @State private var showingRestartAlert = false
     
     private let languages = [
         ("en", "English"),
@@ -20,6 +21,10 @@ struct LanguageSelectorView: View {
                     Button(action: {
                         selectedLanguage = languageCode
                         UserDefaults.standard.set([languageCode], forKey: "AppleLanguages")
+                        UserDefaults.standard.synchronize()
+                        
+                        // Show alert to restart app
+                        showingRestartAlert = true
                     }) {
                         HStack {
                             Text(languageName)
@@ -48,6 +53,11 @@ struct LanguageSelectorView: View {
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             selectedLanguage = Locale.preferredLanguages.first?.prefix(2).description ?? "en"
+        }
+        .alert("Language Changed", isPresented: $showingRestartAlert) {
+            Button("OK") { }
+        } message: {
+            Text("Please restart the app to see the language change take effect.")
         }
     }
 }
