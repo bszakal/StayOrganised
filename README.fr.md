@@ -4,9 +4,9 @@ Une application iOS de gestion de tâches construite avec SwiftUI, démontrant l
 
 ## 📱 Captures d'écran
 
-| Vue d'accueil | Création de tâches | Vue calendrier | Paramètres profil |
-|---------------|-------------------|----------------|------------------|
-| ![Home](StayOrganised/UI/FinalUI/Simulator%20Screenshot%20-%20iPhone%2016%20Pro%20-%202025-09-07%20at%2018.51.32.png) | ![Create Task](StayOrganised/UI/FinalUI/Simulator%20Screenshot%20-%20iPhone%2016%20Pro%20-%202025-09-07%20at%2018.51.46.png) | ![Calendar](StayOrganised/UI/FinalUI/Simulator%20Screenshot%20-%20iPhone%2016%20Pro%20-%202025-09-07%20at%2018.52.28.png) | ![Profile](StayOrganised/UI/FinalUI/Simulator%20Screenshot%20-%20iPhone%2016%20Pro%20-%202025-09-07%20at%2018.52.54.png) |
+| Vue d'accueil | Création de tâches | Vue calendrier |
+|---------------|-------------------|----------------|
+| <img width="1206" height="2622" alt="Simulator Screenshot - iPhone 16 Pro - 2025-09-07 at 18 51 32" src="https://github.com/user-attachments/assets/99a57945-0e3d-48a4-ae2a-1b5fcd8f5e43" /> | <img width="1206" height="2622" alt="Simulator Screenshot - iPhone 16 Pro - 2025-09-07 at 18 52 28" src="https://github.com/user-attachments/assets/92f796ca-d95d-4e2f-92db-e28cae468efc" /> |<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 16 Pro - 2025-09-07 at 18 52 54" src="https://github.com/user-attachments/assets/7b740cd6-01b2-484d-9e18-06f18a0f7857" /> |
 
 ## 🏗️ Vue d'ensemble de l'architecture
 
