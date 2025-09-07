@@ -53,16 +53,7 @@ struct CalendarView: View {
     private var monthCalendarView: some View {
         LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 8) {
             ForEach(viewModel.daysInMonth, id: \.self) { day in
-                CalendarDayView(
-                    day: day,
-                    tasksInfo: viewModel.getTasksInfo(for: day),
-                    theme: themeManager.currentTheme,
-                    isInDateRange: viewModel.isDateInRange(day),
-                    month: viewModel.selectedMonth,
-                    onTap: {
-                        viewModel.selectDate(day)
-                    }
-                )
+                CalendarDayView(viewModel: viewModel.createDayViewModel(for: day))
             }
         }
         .padding()

@@ -14,6 +14,7 @@ struct TaskRowView: View {
                 Spacer()
                 toggleButton
             }
+            .contentShape(Rectangle())
             .onTapGesture {
                 viewModel.onTap()
             }

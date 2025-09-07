@@ -4,6 +4,7 @@
 "todays_tasks" = "Pending Tasks";
 "completed" = "Completed";
 "create_task" = "Create a new task";
+"modify_task" = "Update Task";
 "task_title" = "Task title";
 "task_activity" = "Task activity";
 "date" = "Date";

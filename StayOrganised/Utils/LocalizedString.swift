@@ -7,6 +7,7 @@ enum LocalizedString: String, CaseIterable {
     case todaysTasks = "todays_tasks"
     case completed = "completed"
     case createTask = "create_task"
+    case modifyTask = "modify_task"
     case taskTitle = "task_title"
     case taskActivity = "task_activity"
     case date = "date"

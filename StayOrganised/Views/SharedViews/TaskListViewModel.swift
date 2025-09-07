@@ -13,8 +13,10 @@ class TaskListViewModel: ObservableObject {
     private var tasks: [Task] = []
     @Published var pendingTasks = [Task]()
     @Published var completedTasks = [Task]()
+    @Published var createTaskViewModel: CreateTaskViewModel?
     
     private var coreDataManager: CoreDataManagerProtocol
+    private var createTaskViewModelFactory: CreateTaskViewModelFactoryProtocol
     private var cancellables: Set<AnyCancellable> = []
     
     public var startDate: Date? {
@@ -36,17 +38,22 @@ class TaskListViewModel: ObservableObject {
     
     public var completedTasksCallback: ((Double) -> Void)?
     
-    init(coreDataManager: CoreDataManagerProtocol, startDate: Date? = Date(), endDate: Date? = nil, category: TaskCategory = .all) {
+    init(coreDataManager: CoreDataManagerProtocol,
+         createTaskViewModelFactory: CreateTaskViewModelFactoryProtocol,
+         startDate: Date? = Date(),
+         endDate: Date? = nil,
+         category: TaskCategory = .all) {
         self.coreDataManager = coreDataManager
         self.startDate = startDate
         self.endDate = endDate
         self.category = category
+        self.createTaskViewModelFactory = createTaskViewModelFactory
         self.subscriptions()
     }
     
     func createTaskRowViewModel(task: Task) -> TaskRowViewModel {
         let onTapCompletion: (Task) -> Void = { [weak self] task in
-            //todo
+            self?.createTaskViewModel(task: task)
         }
         
         let onToggleComplete: (Task) -> Void = { [weak self] task in
@@ -66,6 +73,10 @@ class TaskListViewModel: ObservableObject {
     
     private func deleteTask(_ task: Task) {
         _ = coreDataManager.deleteTask(task)
+    }
+    
+    private func createTaskViewModel(task: Task) {
+        self.createTaskViewModel = self.createTaskViewModelFactory.createCreateTaskViewModel(task: task)
     }
 
     private func subscriptions() {

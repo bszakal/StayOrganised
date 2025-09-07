@@ -20,6 +20,7 @@ class CalendarViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     private(set) var taskListViewModel: TaskListViewModel
+    private var calendarDayViewModelFactory: CalendarDayViewModelFactoryProtocol
     
     let monthFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -27,13 +28,24 @@ class CalendarViewModel: ObservableObject {
         return formatter
     }()
     
-    init(taskListViewModelFactory: TaskListViewModelFactoryProtocol, coreDataManager: CoreDataManagerProtocol) {
+    init(taskListViewModelFactory: TaskListViewModelFactoryProtocol,
+         coreDataManager: CoreDataManagerProtocol,
+         calendarDayViewModelFactory: CalendarDayViewModelFactoryProtocol) {
         self.taskListViewModel = taskListViewModelFactory.createTaskListViewModel(startDate: nil, endDate: nil)
+        self.calendarDayViewModelFactory = calendarDayViewModelFactory
         self.coreDataManager = coreDataManager
         self.subscriptions()
     }
     
-
+    public func createDayViewModel(for day: Date) -> CalendarDayViewModel {
+        self.calendarDayViewModelFactory.createCalendarDayViewModel(day: day,
+                                                                    tasksInfo: getTasksInfo(for: day),
+                                                                    isInDateRange: isDateInRange(day),
+                                                                    month: selectedMonth) { [weak self] in
+            self?.selectDate(day)
+        }
+        
+    }
     
     var availableMonths: [Date] {
         let calendar = Calendar.current
@@ -83,7 +95,7 @@ class CalendarViewModel: ObservableObject {
         }
     }
     
-    func isDateInRange(_ date: Date) -> Bool {
+    private func isDateInRange(_ date: Date) -> Bool {
         guard let start = startDate else { return false }
         
         if let end = endDate {
@@ -93,7 +105,7 @@ class CalendarViewModel: ObservableObject {
         }
     }
     
-    func getTasksInfo(for date: Date) -> (completed: Int, total: Int) {
+    private func getTasksInfo(for date: Date) -> (completed: Int, total: Int) {
 
         let startOfDay = Calendar.current.startOfDay(for: date)
         guard let endOfDay = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: date) else { return (0,0) }

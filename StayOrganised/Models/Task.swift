@@ -37,13 +37,21 @@ struct Task: Identifiable, Equatable {
     }
 }
 
-enum TaskCategory: String, CaseIterable {
+protocol DisplayName {
+    var displayName: String { get }
+}
+
+enum TaskCategory: String, CaseIterable, Identifiable, DisplayName {
     case all = "all"
     case grocery = "grocery"
     case personal = "personal"
     case work = "work"
     case health = "health"
     case education = "education"
+    
+    var id: String {
+        self.rawValue
+    }
     
     var displayName: String {
         switch self {
@@ -68,11 +76,15 @@ enum TaskCategory: String, CaseIterable {
     }
 }
 
-enum TaskPriority: Int16, CaseIterable {
+enum TaskPriority: Int16, CaseIterable, DisplayName, Identifiable {
     case low = 0
     case medium = 1
     case high = 2
     case urgent = 3
+    
+    var id: Int16 {
+        self.rawValue
+    }
     
     var displayName: String {
         switch self {

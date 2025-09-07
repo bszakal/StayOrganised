@@ -49,7 +49,7 @@ class HomeViewModel: ObservableObject {
         selectedCategory = category
     }
     
-    public func generateCreateTaskViewModel() -> CreateTaskViewModel {
-        return createTaskViewModelFactory.createCreateTaskViewModel()
+    public func generateCreateTaskViewModel(task: Task?) -> CreateTaskViewModel {
+        return createTaskViewModelFactory.createCreateTaskViewModel(task: task)
     }
 }

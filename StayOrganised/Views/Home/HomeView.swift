@@ -34,7 +34,7 @@ struct HomeView: View {
             }
         }
         .sheet(isPresented: $showingCreateTask) {
-            CreateTaskView(viewModel: viewModel.generateCreateTaskViewModel())
+            CreateTaskView(viewModel: viewModel.generateCreateTaskViewModel(task: nil))
                 .environmentObject(themeManager)
         }
     }

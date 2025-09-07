@@ -25,6 +25,9 @@ struct TaskListView: View {
                 }
             }
         }
+        .sheet(item: $viewModel.createTaskViewModel) { viewModel in
+            CreateTaskView(viewModel: viewModel)
+        }
         .scrollContentBackground(.hidden)
         .background(themeManager.currentTheme.backgroundColor)
         .listStyle(.grouped)

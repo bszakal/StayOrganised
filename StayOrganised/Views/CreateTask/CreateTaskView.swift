@@ -19,7 +19,7 @@ struct CreateTaskView: View {
                     .padding()
                 }
             }
-            .navigationTitle(LocalizedString.createTask.localized)
+            .navigationTitle(viewModel.titleView)
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
             .toolbar {
@@ -46,113 +46,32 @@ struct CreateTaskView: View {
     }
     
     private var taskTitle: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(LocalizedString.taskTitle.localized)
-                .font(.subheadline)
-                .fontWeight(.medium)
-                .foregroundColor(themeManager.currentTheme.textPrimaryColor)
-            
-            TextField(LocalizedString.writeHere.localized, text: $viewModel.title)
-                .textFieldStyle(ThemedTextFieldStyle(theme: themeManager.currentTheme))
-        }
+        ThemedTextField(title: LocalizedString.taskTitle.localized, text: $viewModel.title)
     }
     
     private var taskDescription: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(LocalizedString.taskActivity.localized)
-                .font(.subheadline)
-                .fontWeight(.medium)
-                .foregroundColor(themeManager.currentTheme.textPrimaryColor)
-            
-            TextField(LocalizedString.writeHere.localized, text: $viewModel.taskDescription)
-                .textFieldStyle(ThemedTextFieldStyle(theme: themeManager.currentTheme))
-        }
+        ThemedTextField(title: LocalizedString.taskActivity.localized, text: $viewModel.taskDescription)
     }
     
     private var dateAndTime: some View {
         HStack(spacing: 16) {
-            VStack(alignment: .leading, spacing: 8) {
-                Text(LocalizedString.date.localized)
-                    .font(.subheadline)
-                    .fontWeight(.medium)
-                    .foregroundColor(themeManager.currentTheme.textPrimaryColor)
-                
-                DatePicker("", selection: $viewModel.dueDate, displayedComponents: .date)
-                    .datePickerStyle(CompactDatePickerStyle())
-                    .labelsHidden()
-                    .background(themeManager.currentTheme.cardBackgroundColor)
-                    .cornerRadius(8)
-            }
-            
-            VStack(alignment: .leading, spacing: 8) {
-                Text(LocalizedString.time.localized)
-                    .font(.subheadline)
-                    .fontWeight(.medium)
-                    .foregroundColor(themeManager.currentTheme.textPrimaryColor)
-                
-                DatePicker("", selection: $viewModel.dueDate, displayedComponents: .hourAndMinute)
-                    .datePickerStyle(CompactDatePickerStyle())
-                    .labelsHidden()
-                    .background(themeManager.currentTheme.cardBackgroundColor)
-                    .cornerRadius(8)
-            }
+            TitledDatePicker(title: LocalizedString.date.localized, type: .date, date: $viewModel.dueDate)
+            TitledDatePicker(title: LocalizedString.time.localized, type: .hourAndMinute, date: $viewModel.dueDate)
         }
     }
     
     private var category: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(LocalizedString.taskCategory.localized)
-                .font(.subheadline)
-                .fontWeight(.medium)
-                .foregroundColor(themeManager.currentTheme.textPrimaryColor)
-            
-            Menu {
-                ForEach(TaskCategory.allCases.filter { $0 != .all }, id: \.self) { category in
-                    Button(category.displayName) {
-                        viewModel.selectedCategory = category
-                    }
-                }
-            } label: {
-                HStack {
-                    Text(viewModel.selectedCategory.displayName)
-                        .foregroundColor(themeManager.currentTheme.textPrimaryColor)
-                    Spacer()
-                    Image(systemName: "chevron.down")
-                        .foregroundColor(themeManager.currentTheme.textSecondaryColor)
-                }
-                .padding()
-                .background(themeManager.currentTheme.cardBackgroundColor)
-                .cornerRadius(8)
-            }
-        }
+        DropDownSelection<TaskCategory>(title: LocalizedString.taskCategory.localized,
+                                        selections: TaskCategory.allCases.filter { $0 != .all },
+                                        selectedItem: $viewModel.selectedCategory)
     }
     
+
+    
     private var prioritySelection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(LocalizedString.priority.localized)
-                .font(.subheadline)
-                .fontWeight(.medium)
-                .foregroundColor(themeManager.currentTheme.textPrimaryColor)
-            
-            Menu {
-                ForEach(TaskPriority.allCases, id: \.self) { priority in
-                    Button(priority.displayName) {
-                        viewModel.selectedPriority = priority
-                    }
-                }
-            } label: {
-                HStack {
-                    Text(viewModel.selectedPriority.displayName)
-                        .foregroundColor(themeManager.currentTheme.textPrimaryColor)
-                    Spacer()
-                    Image(systemName: "chevron.down")
-                        .foregroundColor(themeManager.currentTheme.textSecondaryColor)
-                }
-                .padding()
-                .background(themeManager.currentTheme.cardBackgroundColor)
-                .cornerRadius(8)
-            }
-        }
+        DropDownSelection<TaskPriority>(title: LocalizedString.priority.localized,
+                                        selections: TaskPriority.allCases,
+                                        selectedItem: $viewModel.selectedPriority)
     }
     
     private var saveButton: some View {
@@ -171,17 +90,5 @@ struct CreateTaskView: View {
         }
         .disabled(!viewModel.isFormValid)
         .opacity(viewModel.isFormValid ? 1.0 : 0.6)
-    }
-}
-
-struct ThemedTextFieldStyle: TextFieldStyle {
-    let theme: AppTheme
-    
-    func _body(configuration: TextField<Self._Label>) -> some View {
-        configuration
-            .padding()
-            .background(theme.cardBackgroundColor)
-            .cornerRadius(8)
-            .foregroundColor(theme.textPrimaryColor)
     }
 }

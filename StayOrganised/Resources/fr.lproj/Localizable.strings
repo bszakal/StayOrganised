@@ -4,6 +4,7 @@
 "todays_tasks" = "Tâches a faire";
 "completed" = "Terminé";
 "create_task" = "Créer une nouvelle tâche";
+"modify_task" = "Modifier la tâche";
 "task_title" = "Titre de la tâche";
 "task_activity" = "Activité de la tâche";
 "date" = "Date";

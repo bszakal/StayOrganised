@@ -1,6 +1,6 @@
 import Foundation
 
-class CreateTaskViewModel: ObservableObject {
+class CreateTaskViewModel: ObservableObject, Identifiable {
     
     @Published var title = ""
     @Published var taskDescription = ""
@@ -8,20 +8,44 @@ class CreateTaskViewModel: ObservableObject {
     @Published var selectedCategory: TaskCategory = .personal
     @Published var selectedPriority: TaskPriority = .medium
     
+    private let taskToModify: Task?
+    
+    public let id = UUID()
     private let coreDataManager: CoreDataManagerProtocol
     
     var isFormValid: Bool {
         !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
     
-    init(coreDataManager: CoreDataManagerProtocol) {
+    var titleView: String {
+        if taskToModify != nil {
+            LocalizedString.modifyTask.localized
+        } else {
+            LocalizedString.createTask.localized
+        }
+    }
+    
+    init(coreDataManager: CoreDataManagerProtocol, task: Task?) {
         self.coreDataManager = coreDataManager
+        
+        guard let task else {
+            self.taskToModify = nil
+            return
+        }
+        
+        self.title = task.title
+        self.taskDescription = task.taskDescription ?? ""
+        self.dueDate = task.dueDate
+        self.selectedCategory = task.category
+        self.selectedPriority = task.priority
+        self.taskToModify = task
     }
     
     func createTask() {
         guard isFormValid else { return }
         
         let task = Task(
+            id: self.taskToModify?.id ?? UUID(),
             title: title.trimmingCharacters(in: .whitespacesAndNewlines),
             taskDescription: taskDescription.isEmpty ? nil : taskDescription.trimmingCharacters(in: .whitespacesAndNewlines),
             category: selectedCategory,
@@ -30,7 +54,12 @@ class CreateTaskViewModel: ObservableObject {
             dueDate: dueDate
         )
         
-        _ = coreDataManager.createTask(task)
+        if self.taskToModify != nil {
+            _ = coreDataManager.updateTask(task)
+            
+        } else {
+            _ = coreDataManager.createTask(task)
+        }
         resetForm()
     }
     
