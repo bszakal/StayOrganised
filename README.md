@@ -1,3 +1,5 @@
+# Multilanguage README Pattern
+[![fr](https://img.shields.io/badge/lang-fr-red.svg)](https://github.com/bszakal/StayOrganised/blob/main/README.fr.md)
 
 # StayOrganised - iOS To-Do App
 
