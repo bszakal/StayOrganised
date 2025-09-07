@@ -29,13 +29,6 @@ class CoreDataManager: CoreDataManagerProtocol {
         tasksSubject.send(businessTasks)
     }
 
-    
-//    func fetchTasks(startDate: Date, endDate: Date) -> [Task] {
-//        let taskEntities = coreDataService.fetchTasks(startDate: startDate, endDate: endDate)
-//        let businessTasks = taskEntities.compactMap { taskParser.convertToBusinessModel($0) }
-//        return businessTasks
-//    }
-    
     func createTask(_ task: Task) -> Bool {
         guard let taskEntity = taskParser.convertToCoreDataModel(task) else {
             return false
@@ -64,14 +57,6 @@ class CoreDataManager: CoreDataManagerProtocol {
     
     func deleteTask(_ task: Task) -> Bool {
         let success = coreDataService.deleteTask(withId: task.id)
-        if success {
-            loadTasks()
-        }
-        return success
-    }
-    
-    func deleteTask(withId id: UUID) -> Bool {
-        let success = coreDataService.deleteTask(withId: id)
         if success {
             loadTasks()
         }

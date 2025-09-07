@@ -69,11 +69,6 @@ class CoreDataService: CoreDataServiceProtocol {
         return saveContext()
     }
     
-    func deleteTask(_ task: TaskEntity) -> Bool {
-        context.delete(task)
-        return saveContext()
-    }
-    
     func deleteTask(withId id: UUID) -> Bool {
         let request: NSFetchRequest<TaskEntity> = TaskEntity.fetchRequest()
         request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
@@ -90,7 +85,7 @@ class CoreDataService: CoreDataServiceProtocol {
         return false
     }
     
-    func saveContext() -> Bool {
+    private func saveContext() -> Bool {
         guard context.hasChanges else { return true }
         
         do {
