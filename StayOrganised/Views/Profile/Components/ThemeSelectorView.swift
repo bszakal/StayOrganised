@@ -10,9 +10,6 @@ struct ThemeSelectorView: View {
                 .ignoresSafeArea()
             
             VStack(spacing: 24) {
-                Text(LocalizedString.chooseTheme.localized)
-                    .font(.headline)
-                    .foregroundColor(themeManager.currentTheme.textPrimaryColor)
                 
                 HStack(spacing: 16) {
                     ForEach(AppTheme.allCases, id: \.self) { theme in
