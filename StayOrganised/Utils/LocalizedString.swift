@@ -46,6 +46,7 @@ enum LocalizedString: String, CaseIterable {
     case edit = "edit"
     case delete = "delete"
     case markAsDone = "mark_as_done"
+    case markAsUndone = "mark_as_undone"
     case cancel = "cancel"
     case save = "save"
     case writeHere = "write_here"

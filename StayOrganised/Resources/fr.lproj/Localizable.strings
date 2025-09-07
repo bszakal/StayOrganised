@@ -48,6 +48,7 @@
 "edit" = "Modifier";
 "delete" = "Supprimer";
 "mark_as_done" = "Marquer comme terminé";
+"mark_as_undone" = "Marquer comme non terminé";
 "cancel" = "Annuler";
 "save" = "Sauvegarder";
 "write_here" = "Écrire ici";

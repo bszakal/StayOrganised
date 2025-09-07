@@ -69,7 +69,7 @@ struct TaskRowView: View {
         }
         .tint(.blue)
         
-      Button(viewModel.task.isCompleted ? "Mark Undone" : LocalizedString.markAsDone.localized) {
+      Button(viewModel.task.isCompleted ? LocalizedString.markAsUndone.localized : LocalizedString.markAsDone.localized) {
             viewModel.onToggle()
         }
       .tint(themeManager.currentTheme.primaryColor)

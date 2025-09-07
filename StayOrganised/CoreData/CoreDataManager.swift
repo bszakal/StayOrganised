@@ -13,6 +13,7 @@ class CoreDataManager: CoreDataManagerProtocol {
     }
     
     private let persistentContainer: NSPersistentContainer
+    
     init(coreDataFactory: CoreDataFactoryProtocol) {
         
         let persistentContainer = NSPersistentContainer(name: "StayOrganisedModel")
@@ -28,7 +29,7 @@ class CoreDataManager: CoreDataManagerProtocol {
         self.loadTasks()
     }
     
-    func loadTasks() {
+    private func loadTasks() {
         let taskEntities = coreDataService.fetchTasks()
         let businessTasks = taskEntities.compactMap { taskParser.convertToBusinessModel($0) }
         tasksSubject.send(businessTasks)
