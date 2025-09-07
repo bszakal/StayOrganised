@@ -16,13 +16,7 @@ class CoreDataManager: CoreDataManagerProtocol {
     
     init(coreDataFactory: CoreDataFactoryProtocol) {
         
-        let persistentContainer = NSPersistentContainer(name: "StayOrganisedModel")
-        persistentContainer.loadPersistentStores { _, error in
-            if let error = error {
-                fatalError("Core Data error: \(error)")
-            }
-        }
-        self.persistentContainer = persistentContainer
+        self.persistentContainer = coreDataFactory.createPersistentContainer()
         
         self.coreDataService = coreDataFactory.createCoreDataService(context: persistentContainer.viewContext)
         self.taskParser = coreDataFactory.createCoredataParser(context: persistentContainer.viewContext)

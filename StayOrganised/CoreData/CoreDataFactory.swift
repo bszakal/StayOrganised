@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-protocol CoreDataFactoryProtocol: CoreDataServiceFactoryProtocol, TaskParserFactoryProtocol {
+protocol CoreDataFactoryProtocol: CoreDataServiceFactoryProtocol, TaskParserFactoryProtocol, PersistentContainerFactoryProtocol {
     
 }
 
@@ -18,6 +18,10 @@ protocol CoreDataServiceFactoryProtocol {
 
 protocol TaskParserFactoryProtocol {
     func createCoredataParser(context: NSManagedObjectContext) -> TaskParserProtocol
+}
+
+protocol PersistentContainerFactoryProtocol {
+    func createPersistentContainer() -> NSPersistentContainer
 }
 
 class CoreDataFactory: CoreDataFactoryProtocol {
@@ -30,4 +34,13 @@ class CoreDataFactory: CoreDataFactoryProtocol {
         CoreDataService(context: context)
     }
     
+    func createPersistentContainer() -> NSPersistentContainer {
+        let container = NSPersistentContainer(name: "StayOrganisedModel")
+        container.loadPersistentStores { _, error in
+            if let error = error {
+                fatalError("Core Data error: \(error)")
+            }
+        }
+        return container
+    }
 }
