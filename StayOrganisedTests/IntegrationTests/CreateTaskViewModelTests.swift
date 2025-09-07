@@ -141,4 +141,61 @@ final class CreateTaskViewModelTests: XCTestCase {
         XCTAssertFalse(modifiedTask.isCompleted)
     }
     
+    func testDeleteTask_ShouldRemoveTaskFromPublisher() throws {
+        // Given - First create a task to delete
+        let taskToDelete = Task(
+            id: UUID(),
+            title: "Task to Delete",
+            taskDescription: "This task will be deleted",
+            category: .work,
+            priority: .medium,
+            taskType: .individual,
+            dueDate: Date(),
+            isCompleted: false
+        )
+        
+        let createExpectation = XCTestExpectation(description: "Task should be created and published")
+        var createdTasks: [Task] = []
+        
+        // Subscribe to tasks publisher to verify task creation
+        coreDataManager.tasks
+            .dropFirst() // Skip initial empty array
+            .sink { tasks in
+                createdTasks = tasks
+                createExpectation.fulfill()
+            }
+            .store(in: &cancellables)
+        
+        // Create the initial task
+        _ = coreDataManager.createTask(taskToDelete)
+        
+        // Verify task was created
+        wait(for: [createExpectation], timeout: 2.0)
+        XCTAssertEqual(createdTasks.count, 1, "Should have one task after creation")
+        XCTAssertEqual(createdTasks.first?.id, taskToDelete.id, "Should have the created task")
+        
+        // Create view model for deletion (modify mode)
+        viewModel = CreateTaskViewModel(coreDataManager: coreDataManager, task: taskToDelete)
+        
+        let deleteExpectation = XCTestExpectation(description: "Task should be removed from tasks array")
+        var publishedTasks: [Task] = []
+        
+        // Subscribe to tasks publisher for deletion verification
+        coreDataManager.tasks
+            .dropFirst() // Skip the current state with the task
+            .sink { tasks in
+                publishedTasks = tasks
+                deleteExpectation.fulfill()
+            }
+            .store(in: &cancellables)
+        
+        // When - Delete the task
+        viewModel.deleteTask()
+        
+        // Then - Verify task was deleted
+        wait(for: [deleteExpectation], timeout: 2.0)
+        
+        XCTAssertEqual(publishedTasks.count, 0, "Should have no tasks after deletion")
+    }
+    
 }
