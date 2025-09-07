@@ -25,6 +25,10 @@ class CreateTaskViewModel: ObservableObject, Identifiable {
         }
     }
     
+    var isModifyMode: Bool {
+        taskToModify != nil
+    }
+    
     init(coreDataManager: CoreDataManagerProtocol, task: Task?) {
         self.coreDataManager = coreDataManager
         
@@ -61,6 +65,11 @@ class CreateTaskViewModel: ObservableObject, Identifiable {
             _ = coreDataManager.createTask(task)
         }
         resetForm()
+    }
+    
+    func deleteTask() {
+        guard let taskToModify = taskToModify else { return }
+        _ = coreDataManager.deleteTask(taskToModify)
     }
     
     private func resetForm() {

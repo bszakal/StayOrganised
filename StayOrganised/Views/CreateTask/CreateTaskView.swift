@@ -41,6 +41,11 @@ struct CreateTaskView: View {
             category
             prioritySelection
             Spacer(minLength: 40)
+            
+            if viewModel.isModifyMode {
+                deleteButton
+            }
+            
             saveButton
         }
     }
@@ -80,15 +85,21 @@ struct CreateTaskView: View {
             dismiss()
         }) {
             Text(LocalizedString.save.localized)
-                .font(.headline)
-                .fontWeight(.semibold)
-                .foregroundColor(.white)
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(themeManager.currentTheme.primaryColor)
-                .cornerRadius(12)
         }
+        .buttonStyle(PrimaryButtonStyle(
+            backgroundColor: themeManager.currentTheme.primaryColor,
+            isDisabled: !viewModel.isFormValid
+        ))
         .disabled(!viewModel.isFormValid)
-        .opacity(viewModel.isFormValid ? 1.0 : 0.6)
+    }
+    
+    private var deleteButton: some View {
+        Button(action: {
+            viewModel.deleteTask()
+            dismiss()
+        }) {
+            Text(LocalizedString.delete.localized)
+        }
+        .buttonStyle(PrimaryButtonStyle(backgroundColor: .red))
     }
 }
