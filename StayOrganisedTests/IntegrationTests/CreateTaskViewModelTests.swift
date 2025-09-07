@@ -91,4 +91,54 @@ final class CreateTaskViewModelTests: XCTestCase {
         // Test passes if expectation is not fulfilled (task not created)
     }
     
+    func testModifyTask_ShouldUpdateTaskTitleAndPriority() throws {
+        // Given - First create a task to modify
+        let initialTask = Task(
+            id: UUID(),
+            title: "Initial Task",
+            taskDescription: "Initial Description",
+            category: .personal,
+            priority: .low,
+            taskType: .individual,
+            dueDate: Date(),
+            isCompleted: false
+        )
+        
+        // Create the initial task
+        _ = coreDataManager.createTask(initialTask)
+        
+        // Create view model for modification
+        viewModel = CreateTaskViewModel(coreDataManager: coreDataManager, task: initialTask)
+        
+        let expectation = XCTestExpectation(description: "Modified task should be published in tasks array")
+        var publishedTasks: [Task] = []
+        
+        // Set up modified test data - changing title and priority
+        viewModel.title = "Modified Task"
+        viewModel.selectedPriority = .high
+        
+        // Subscribe to tasks publisher, skip first emission since we already have the initial task
+        coreDataManager.tasks
+            .dropFirst() // Skip the current state with initial task
+            .sink { tasks in
+                publishedTasks = tasks
+                expectation.fulfill()
+            }
+            .store(in: &cancellables)
+        
+        // When - Modify the task
+        viewModel.createTask()
+        
+        // Then
+        wait(for: [expectation], timeout: 2.0)
+        
+        XCTAssertEqual(publishedTasks.count, 1, "Should have exactly one task")
+        
+        let modifiedTask = try XCTUnwrap(publishedTasks.first, "Should have a task in the array")
+        XCTAssertEqual(modifiedTask.id, initialTask.id, "Task ID should remain the same")
+        XCTAssertEqual(modifiedTask.title, "Modified Task")
+        XCTAssertEqual(modifiedTask.priority, .high)
+        XCTAssertFalse(modifiedTask.isCompleted)
+    }
+    
 }
